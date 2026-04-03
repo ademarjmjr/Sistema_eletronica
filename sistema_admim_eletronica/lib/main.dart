@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart'; // Faltava esse import
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'Cadastro_Cliente.dart';
 
 Future<void> main() async {
   // 1. Garante a inicialização dos Widgets
@@ -28,9 +29,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      home: const Scaffold(
+      home: const CadastroCliente(),
+      /*home: const Scaffold(
         body: Center(child: Text('Conectado ao Supabase!')),
-      ),
+      ),*/
     );
   }
 }
