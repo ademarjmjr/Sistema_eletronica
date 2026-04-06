@@ -14,43 +14,32 @@ class _CadastroClienteState extends State<CadastroCliente> {
   final _docController = TextEditingController(); // Controlador para CPF/CNPJ
 
   Future<void> _salvarCliente() async {
-    final nome = _nomeController.text.trim();
-    final zap = _zapController.text.trim();
-    final doc = _docController.text.trim();
+  try {
+    print('Tentando salvar...');
+    final response = await supabase.from('clientes').insert({
+      'nome': _nomeController.text,
+      'whatsapp': _zapController.text,
+      'documento': _docController.text,
+    }).select(); // O .select() ajuda a confirmar se o dado voltou
 
-    if (nome.isEmpty) {
+    print('Resposta do banco: $response');
+    
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('O nome é obrigatório!')),
+        const SnackBar(content: Text('Sucesso!'), backgroundColor: Colors.green),
       );
-      return;
     }
-
-    try {
-      // Inserindo no Supabase com o nome da coluna 'documento'
-      await supabase.from('clientes').insert({
-        'nome': nome,
-        'whatsapp': zap,
-        'documento': doc, 
-      });
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Cliente cadastrado com sucesso!'), backgroundColor: Colors.green),
-        );
-        _nomeController.clear();
-        _zapController.clear();
-        _docController.clear();
-      }
-    } catch (e) {
-      // Se der erro, ele vai mostrar aqui no console do VS Code
-      print('Erro detalhado: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao salvar: Verifique a conexão ou a tabela.'), backgroundColor: Colors.red),
-        );
-      }
+  } catch (e) {
+    // ESTA LINHA É A MAIS IMPORTANTE:
+    print('ERRO TÉCNICO DETALHADO: $e'); 
+    
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro: $e'), backgroundColor: Colors.red),
+      );
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
